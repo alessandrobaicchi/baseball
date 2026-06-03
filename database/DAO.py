@@ -57,3 +57,36 @@ class DAO():
         cursor.close()
         conn.close()
         return result
+
+
+
+    @staticmethod
+    def getSalariesTeam(year, idMapTeams):
+        conn = DBConnect.get_connection()
+
+        # result = []
+
+        cursor = conn.cursor(dictionary=True)
+        query = """
+                    select t.ID , t.teamCode , sum(s.salary) as totSalary
+                    from salaries s, teams t, appearances a 
+                    where s.`year` = t.`year` and t.`year` = a.`year` and a.`year` = %s
+                    and t.ID = a.teamID and a.playerID = s.playerID 
+                    group by t.ID, t.teamCode
+                """
+
+        cursor.execute(query, (year,))
+        # Il %s viene sostituito da year
+
+        mapSalary = {}  # E' un dizionario vuoto
+        for row in cursor:
+            mapSalary[idMapTeams[row["ID"]]] = row["totSalary"]
+            # Creo una mapSalary che avrà come chiave il team e come valore la somma dei salari.
+            # Il team lo recupero da un idMapTeams (che viene passata al metodo)
+            # che mappa la chiave primaria del team con il team stesso.
+            # In questo modo l'output di questo metodo è un dizionario che ha come chiavi gli oggetti
+            # di tipo team e come valori la somma dei salari ottenuti dalla query.
+
+        cursor.close()
+        conn.close()
+        return mapSalary

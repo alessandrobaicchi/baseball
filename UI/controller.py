@@ -10,10 +10,35 @@ class Controller:
         self._choiceTeam = None
 
     def handleCreaGrafo(self, e):
-        pass
+        self._model.creaGrafo(self._view._ddAnno.value)
+        n, m = self._model.getGraphDetails()
+        self._view._txt_result.controls.clear()
+        self._view._txt_result.controls.append(
+            ft.Text(f"Grafo creato correttamente! Il grafo è costituito da {n} nodi"
+                    f" e {m} archi."))
+        self._view.update_page()
+
+
 
     def handleDettagli(self, e):
-        pass
+        # Per prima cosa recupero il nodo per cui mi interessa cercare i vicino
+        if self._choiceTeam is None:
+            self._view._txt_result.controls.clear()
+            self._view._txt_result.controls.append(ft.Text("Selezionare un team dal menu", color="red"))
+            self._view.update_page()
+            return
+
+        viciniTuple = self._model.getVicini(self._choiceTeam)
+        # viciniTuple è una lista di tuple.
+        self._view._txt_result.controls.clear()
+        self._view._txt_result.controls.append(ft.Text(
+            f"Il nodo {self._choiceTeam} ha {len(viciniTuple)} vicini", color="green"))
+        self._view._txt_result.controls.append(ft.Text("Di seguito una lista ordinata dei vicini", color="green"))
+        for v in viciniTuple:
+            self._view._txt_result.controls.append(ft.Text(f"{v[0]} - peso: {v[1]}", color="green"))
+        self._view.update_page()
+
+
 
     def handlePercorso(self, e):
         pass
