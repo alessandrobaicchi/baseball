@@ -41,7 +41,21 @@ class Controller:
 
 
     def handlePercorso(self, e):
-        pass
+        path, score = self._model.getPathV2(self._choiceTeam)
+
+        self._view._txt_result.controls.clear()
+        self._view._txt_result.controls.append(ft.Text(
+            f"Di seguito il percorso di peso massimo partendo da {self._choiceTeam}, con peso: {score}",
+            color="green"))
+        for p in path:
+            self._view._txt_result.controls.append(ft.Text(p, color="green"))
+
+        self._view.update_page()
+
+        # for p in path:
+        #     print(p)
+        # print(score)
+
 
 
     # Metodo che aggiunge i campi del DD _view._ddAnno
